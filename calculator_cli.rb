@@ -2,6 +2,10 @@ Dir[File.join('.', 'modules', '*.rb')].each { |file| require file }
 
 UTILITY_COMMANDS = %w[stack c]
 
+def omit_results?(formatted_input, result)
+  formatted_input.empty? || result.nil?
+end
+
 def run_utility_command(command, stack)
   case command
   when 'c'
@@ -33,7 +37,7 @@ begin
         break
       else
         result = Rpn.calculate(formatted_input, stack)
-        puts "Result: #{result}"
+        puts "Result: #{result}" unless omit_results?(formatted_input, result)
       end
     rescue => e
       puts "Error: #{e.message}"

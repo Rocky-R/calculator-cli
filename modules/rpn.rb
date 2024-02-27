@@ -11,10 +11,11 @@ class Rpn
         stack.push(token.to_f)
       when *valid_operators
         raise "Insufficient operands" if stack.size < 2
+
         b = stack.pop
         a = stack.pop
         result = a.send(token, b)
-        stack.push(result)
+        stack.push(result) unless result.to_f.nan?
       else
         raise "Invalid token: #{token}"
       end
