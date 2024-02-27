@@ -1,9 +1,6 @@
-def calculate(expression, last_result)
+def calculate(expression, stack)
   valid_operators = %w[+ - * /]
   tokens = expression.split
-  stack = []
-
-  stack.push(last_result.to_f) if last_result
 
   tokens.each do |token|
     case token
@@ -15,27 +12,37 @@ def calculate(expression, last_result)
       a = stack.pop
       result = a.send(token, b)
       stack.push(result)
+    when 'c'
+      stack.clear
+      puts "Clearing stack"
+    when 'stack'
+      puts "Current stack: #{stack}"
     else
       raise "Invalid token: #{token}"
     end
   end
 
-  raise "Too many operands" if stack.size > 1
-  stack.pop
+  stack.last
 end
 
-last_result = nil
+def omit_results?(formatted_input)
+  utility_commands = %w[stack c]
+  formatted_input.empty? || utility_commands.include?(formatted_input)
+end
+
+stack = []
 
 begin
   loop do
     print "> "
     input = gets
+
     break if input.nil? || input.chomp.downcase == 'q'
 
     begin
-      result = calculate(input.chomp, last_result)
-      puts result.to_s
-      last_result = result
+      formatted_input = input.chomp.downcase
+      result = calculate(formatted_input, stack)
+      puts "Result: #{result}" unless omit_results?(formatted_input)
     rescue => e
       puts "Error: #{e.message}"
     end
