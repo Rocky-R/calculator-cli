@@ -3,65 +3,76 @@ Dir[File.join('.', 'modules', '*.rb')].each { |file| require file }
 UTILITY_COMMANDS = %w[stack c module]
 AVAILABLE_MODULES = %w[rpn standard]
 
-def omit_results?(formatted_input, result)
-  formatted_input.empty? || result.nil?
-end
+class CalculatorCLI
+  attr_accessor :stack, :current_module
 
-def format_module_name(name)
-  name.split("_").map(&:capitalize).join
-end
+  def initialize
+    @stack = []
+    @current_module = 'Rpn' # Set default module
+  end
 
-def run_utility_command(command, stack, current_module)
-  case command
-  when 'c'
-    stack.clear
-    puts "Clearing stack"
-  when 'stack'
-    puts "Current stack: #{stack}"
-  when 'module'
-    puts "Current module is: #{current_module}"
-  else
-    puts "Invalid command: #{command}"
+  def process_input(input)
+    formatted_input = input.chomp.downcase
+
+    case formatted_input
+    when *AVAILABLE_MODULES
+      self.current_module = format_module_name(formatted_input)
+      "Module changed to: #{current_module}"
+    when *UTILITY_COMMANDS
+      run_utility_command(formatted_input)
+    else
+      begin
+        calculator_module = Object.const_get(current_module)
+        result = calculator_module.calculate(formatted_input, stack)
+        omit_results?(formatted_input, result) ? nil : "Result: #{result}"
+      rescue => e
+        "Error: #{e.message}"
+      end
+    end
+  end
+
+  private
+
+  def omit_results?(formatted_input, result)
+    formatted_input.empty? || result.nil?
+  end
+
+  def format_module_name(name)
+    name.split("_").map(&:capitalize).join
+  end
+
+  def run_utility_command(command)
+    case command
+    when 'c'
+      stack.clear
+      "Clearing stack"
+    when 'stack'
+      "Current stack: #{stack}"
+    when 'module'
+      "Current module is: #{current_module}"
+    else
+      "Invalid command: #{command}"
+    end
   end
 end
 
-stack = []
-first_iteration = true
-current_module = 'Rpn' # Set default module
+def run_cli
+  cli = CalculatorCLI.new
+  puts "Welcome to the Calculator CLI. The current calculator module is #{cli.current_module}",
+       "To change modules, input the name of the desired module. Available modules are: #{AVAILABLE_MODULES.join(', ')}"
 
-begin
   loop do
-    if first_iteration
-      puts "Welcome to the Calculator CLI. The current calculator module is #{current_module}",
-           "To change modules, input the name of the desired module. Available modules are: #{AVAILABLE_MODULES.join(', ')}"
-      first_iteration = false
-    end
-
     print "> "
     input = gets
 
-    break if input.nil?
+    break if input.nil? || input.chomp.downcase == 'q'
 
-    formatted_input = input.chomp.downcase
+    output = cli.process_input(input)
 
-    begin
-      case formatted_input
-      when *AVAILABLE_MODULES
-        current_module = format_module_name(formatted_input)
-        puts "Module changed to: #{current_module}"
-      when *UTILITY_COMMANDS
-        run_utility_command(formatted_input, stack, current_module)
-      when 'q'
-        break
-      else
-        calculator_module = Object.const_get(current_module)
-        result = calculator_module.calculate(formatted_input, stack)
-        puts "Result: #{result}" unless omit_results?(formatted_input, result)
-      end
-    rescue => e
-      puts "Error: #{e.message}"
-    end
+    puts output unless output.nil?
   end
-rescue EOFError, Interrupt
+
   puts "\nExiting... Goodbye!"
 end
+
+run_cli if __FILE__ == $PROGRAM_NAME
