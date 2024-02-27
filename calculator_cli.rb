@@ -27,7 +27,7 @@ end
 
 stack = []
 first_iteration = true
-current_module = 'Rpn'
+current_module = 'Rpn' # Set default module
 
 begin
   loop do
