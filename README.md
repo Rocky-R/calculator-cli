@@ -1,107 +1,103 @@
-Code Sample
-===================
+# CLI Calculator
 
-We would like to get to know your coding style and see what you would consider your best work.
-In subsequent interviews, we'll talk through your code and make some changes.
+---
 
-CLI RPN Calculator
-==================
+This is a simple CLI for running calculator modules.
+While originally designed as a reverse polish notation calculator, the interface is easily extendable with new modules.
+See the [Adding Modules](#adding-modules) section below.
 
-Implement a command-line reverse polish notation (RPN) calculator using a language that you know well.
+## Installation
 
-Imaginary Context
------------------
+--- 
+Note: You must have `ruby 3.2.x` installed to run this application
 
-We're building this command-line calculator for people who are comfortable with UNIX-like CLI utilities.
-We are starting with the basic 4 operators now but will want to eventually implement other operators and
-an alternate interface (such as WebSocket, file, or TCP socket).
-There's no need to implement these, but design with these future changes in mind.
+1. Clone this repository to your local machine
+2. Navigate to the root dir in your terminal
+3. Run `ruby calculator_cli.rb` to start the CLI
 
-Specifications
---------------
 
-1. The calculator should use standard input and standard output
-2. It should implement the four standard arithmetic operators
-3. The calculator should handle errors and recover gracefully
-4. The calculator should exit when it receives a `q` command or an end of input 
-   indicator (EOF / Ctrl+D)
+## Documentation
 
-You may take creative liberty with anything else; have fun with it!
+---
 
-Example Input/Output
---------------------
+### Basic Usage
+These are the general commands that are available regardless of module:
 
-Use your best judgment as far as the format is concerned, as long as it makes sense to the end user. Your calculator should at the minimum handle the following examples. 
+`module`: Lists the current active module 
 
-    > 5 
-    5
+`[module_name]`: Changes the active module to specified `module_name`
+
+`stack`: Displays the current number stack
+
+`c`: Clears the current stack
+
+`q`: Quits the application
+
+
+### RPN Module
+
+---
+
+This module performs calculations using [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation).
+See below for example usage.
+
+**Notes:**
+* Providing less than two operands will result in an error
+* Any calculations that result in `NaN` IE zero division, will return `nil` and the result will not be pushed to the stack
+* Providing an operator by itself will only work if at least two numbers are in the stack
+
+### RPN Module Example Input/Output
+
+
+
+    > 7 
+    Result: 7
     > 8
-    8
+    Result: 8
     > +
-    13
+    Result: 15
 
 ---
 
-    > 5 5 5 8 + + -
-    -13.0
-    > 13 +
-    0.0
+    > 5 5 6 7 + -
+    Result: -8.0
 
 ---
 
-    > -3
-    -3.0
-    > -2
-    -2.0
-    > *
-    6.0
-    > 5
-    5.0
-    > +
-    11.0
+    > 8 +
+    Error: Insufficient operands
 
 ---
 
-    > 5
-    5
+    > 3
+    Result: 3
     > 9
-    9
-    > 1
-    1
-    > -
-    8
-    > /
-    0.625
+    Result: 9
+    > stack
+    Current stack: [3.0, 9.0]
+    > *
+    Result: 27.0
 
-Guidelines
-==========
+### Adding Modules
 
-Things We Care About
---------------------
+---
 
-These hold true both for this submission and for your work here in general. We expect that:
+To add a new module to the CLI, follow these steps:
+1. Create a new module with your desired functionality and add it to the `modules` directory
+   1. Note: The new module must contain a `calculate` method. See the `rpn.rb` file for an example
+2. Add the new module name to the `AVAILABLE_MODULES` array within the `calculator_cli.rb` file.
+   1. Note: Be sure to use `snake_case` when using multi-word module names. IE `cool_new_module`
+3. When you run the CLI, you should now see your module listed in `Available modules are:` portion of the welcome message
 
-- It works right
-- The code is well-abstracted and uses good names
-- It provides for a good user experience (end-user and programmer)
-- The code adheres to style and practices accepted by the community
-- Tests demonstrate intended use, help prevent regression, and can withstand change
-- You write intention-revealing commit messages
 
-There are a range of expectations from various companies in their interviewing code exercises, from minimal code to get the job done and prove you can program, to expecting exemplary code that demonstrates how well you can design things when the occasion requires it. We tend to judge toward the latter end of the spectrum, assuming that anyone who can write well-crafted code can also scale down quality to do things quickly, but not necessarily the other way around.
+### Additional Notes
 
-Readme
-------
+---
 
-Write your README as if it was for a production service. Include the following items:
-
-* A high-level description of your solution
-* Reasoning behind your technical choices, including architectural
-* Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project
-* How to run your code, if applicable
-* Link to the hosted application, if applicable
-
-Submitting
-----------
-
-Submit your code as a **separate** git repository, preferably on GitHub
+* This code is my attempt at meeting all requirements of the original exercise while also creating something that is refactorable and extendable with new features
+* If I spent more time on this, I would add a few more features
+  * A simple REST api interface for using the calculator modules in web apps
+  * Add in app documentation via `help` command
+  * Streamline/Refactor the module installation process (gather module names programmatically rather than a static list)
+  * Refactor app to run in docker or similar to avoid ruby version requirements 
+  * Move utility and helper command execution into separate module
