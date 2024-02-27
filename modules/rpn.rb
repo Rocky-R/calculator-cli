@@ -3,11 +3,12 @@
 class Rpn
   def self.calculate(expression, stack)
     valid_operators = %w[+ - * /]
+    integer_or_float = /\d+(\.\d+)?/
     tokens = expression.split
 
     tokens.each do |token|
       case token
-      when /\d+(\.\d+)?/ # Matches integers and floating point numbers
+      when integer_or_float
         stack.push(token.to_f)
       when *valid_operators
         raise "Insufficient operands" if stack.size < 2
