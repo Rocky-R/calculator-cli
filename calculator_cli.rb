@@ -57,22 +57,30 @@ class CalculatorCLI
 end
 
 def run_cli
+  interrupted = false
+  exit_message = "\nExiting... Goodbye!"
   cli = CalculatorCLI.new
+
   puts "Welcome to the Calculator CLI. The current calculator module is #{cli.current_module}",
        "To change modules, input the name of the desired module. Available modules are: #{AVAILABLE_MODULES.join(', ')}"
 
-  loop do
-    print "> "
-    input = gets
+  begin
+    loop do
+      print "> "
+      input = gets
 
-    break if input.nil? || input.chomp.downcase == 'q'
+      break if input.nil? || input.chomp.downcase == 'q'
 
-    output = cli.process_input(input)
+      output = cli.process_input(input)
 
-    puts output unless output.nil?
+      puts output unless output.nil?
+    end
+  rescue Interrupt
+    interrupted = true
+    puts exit_message
   end
 
-  puts "\nExiting... Goodbye!"
+  puts exit_message unless interrupted
 end
 
 run_cli if __FILE__ == $PROGRAM_NAME
