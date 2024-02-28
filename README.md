@@ -9,6 +9,7 @@ See the [Adding Modules](#adding-modules) section below.
 ## Installation
 
 --- 
+
 Note: You must have `ruby 3.2.x` installed to run this application
 
 1. Clone this repository to your local machine
