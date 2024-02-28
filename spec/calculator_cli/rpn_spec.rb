@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../modules/rpn'
+require_relative '../../lib/calculator/rpn'
 
 RSpec.describe Rpn do
   describe '.calculate' do

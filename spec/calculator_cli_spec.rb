@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../calculator_cli'
+require_relative '../lib/calculator.rb'
 
-RSpec.describe CalculatorCLI do
-  let(:cli) { CalculatorCLI.new }
+RSpec.describe CLI do
+  let(:cli) { CLI.new }
 
   describe '#process_input' do
     context 'when input is a utility command' do
