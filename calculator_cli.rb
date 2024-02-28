@@ -24,7 +24,7 @@ class CalculatorCLI
       begin
         calculator_module = Object.const_get(current_module)
         result = calculator_module.calculate(formatted_input, stack)
-        omit_results?(formatted_input, result) ? nil : "Result: #{result}"
+        "Result: #{result}" unless omit_results?(formatted_input, result)
       rescue => e
         "Error: #{e.message}"
       end

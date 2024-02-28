@@ -13,7 +13,7 @@ Note: You must have `ruby 3.2.x` installed to run this application
 
 1. Clone this repository to your local machine
 2. Navigate to the root dir in your terminal
-3. Run `ruby calculator_cli.rb` to start the CLI
+3. Run `bin/calculator` to start the CLI
 
 
 ## Documentation
