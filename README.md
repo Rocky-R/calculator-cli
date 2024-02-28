@@ -13,7 +13,7 @@ Note: You must have `ruby 3.2.x` installed to run this application
 
 1. Clone this repository to your local machine
 2. Navigate to the root dir in your terminal
-3. Run `ruby calculator_cli.rb` to start the CLI
+3. Run `bin/calculator` to start the CLI
 
 
 ## Documentation
@@ -83,9 +83,9 @@ See below for example usage.
 ---
 
 To add a new module to the CLI, follow these steps:
-1. Create a new module with your desired functionality and add it to the `modules` directory
-   1. Note: The new module must contain a `calculate` method. See the `rpn.rb` file for an example
-2. Add the new module name to the `AVAILABLE_MODULES` array within the `calculator_cli.rb` file.
+1. Create a new module with your desired functionality and add it to the `lib/calculator` directory
+   1. Note: The new module must contain a `calculate` method. See the `lib/calculator/rpn.rb` file for an example
+2. Add the new module name to the `AVAILABLE_MODULES` array within the `lib/calculator/cli.rb` file.
    1. Note: Be sure to use `snake_case` when using multi-word module names. IE `cool_new_module`
 3. When you run the CLI, you should now see your module listed in `Available modules are:` portion of the welcome message
 

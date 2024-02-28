@@ -1,9 +1,7 @@
-Dir[File.join('.', 'modules', '*.rb')].each { |file| require file }
-
 UTILITY_COMMANDS = %w[stack c module]
 AVAILABLE_MODULES = %w[rpn standard]
 
-class CalculatorCLI
+class CLI
   attr_accessor :stack, :current_module
 
   def initialize
@@ -24,7 +22,7 @@ class CalculatorCLI
       begin
         calculator_module = Object.const_get(current_module)
         result = calculator_module.calculate(formatted_input, stack)
-        omit_results?(formatted_input, result) ? nil : "Result: #{result}"
+        "Result: #{result}" unless omit_results?(formatted_input, result)
       rescue => e
         "Error: #{e.message}"
       end
@@ -55,32 +53,3 @@ class CalculatorCLI
     end
   end
 end
-
-def run_cli
-  interrupted = false
-  exit_message = "\nExiting... Goodbye!"
-  cli = CalculatorCLI.new
-
-  puts "Welcome to the Calculator CLI. The current calculator module is #{cli.current_module}",
-       "To change modules, input the name of the desired module. Available modules are: #{AVAILABLE_MODULES.join(', ')}"
-
-  begin
-    loop do
-      print "> "
-      input = gets
-
-      break if input.nil? || input.chomp.downcase == 'q'
-
-      output = cli.process_input(input)
-
-      puts output unless output.nil?
-    end
-  rescue Interrupt
-    interrupted = true
-    puts exit_message
-  end
-
-  puts exit_message unless interrupted
-end
-
-run_cli if __FILE__ == $PROGRAM_NAME
